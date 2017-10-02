@@ -1,0 +1,382 @@
+﻿<!DOCTYPE html>
+<html ng-app="myModule">
+<head>
+    <script src="Scripts/angular.min.js"></script>
+    <script src="Scripts/Script.js"></script>
+    <script src="Scripts/Filters.js"></script> <!--Custom Filters-->
+    <script src="Scripts/Services.js"></script>
+    <link href="Styles.css" rel="stylesheet" />
+</head>
+<body>
+    <div>
+        {{message}} <!--this cannot be displayed-->
+    </div>
+
+    <!--General-->
+    <div ng-controller="myController">
+        <!--ng-controller can be placed in body tag too-->
+        <!--Display object data-->
+        <div>
+            <b>Display Object Data:</b>
+            <div>
+                First Name: {{employee.firstName}}
+            </div>
+            <div>
+                Last Name: {{employee.lastName}}
+            </div>
+            <div>
+                Gender: {{employee.gender}}
+            </div>
+            <div>
+                <!--Using a binding expression with src results in a 404 error.
+                    Becasue when DOM is parsed, an attempt is made to fetch the image from the server.
+                    src binding expression is not evaluated. The image is then loaded in the second request
+                    from the image path.-->
+                <!--<img src="{{employee.icon}}" alt="{{employee.firstname}}" style="height:50px;width:50px" />-->
+
+                <!--Use ng-src to fix 404 error-->
+                <img ng-src="{{employee.icon}}" alt="{{employee.firstname}}" style="height:50px;width:50px" />
+            </div>
+            <br />
+        </div>
+
+        <!--ng-model (two way data binding): update view when update model; update model when update view-->
+        <div>
+            <b>Use of ng-model:</b><br />
+            <!--used with input-->
+            <input type="text" ng-model="message" />
+            {{message}} <!--message value is automatically updated while typinng in input box-->
+            <!--can also be used with select and textarea-->
+            <br /><br />
+        </div>
+
+        <!--ng-repeat-->
+        <div>
+            <!--used in table-->
+            <div>
+                <b>Use ng-repeat to Generate Table:</b>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>First Name</th>
+                            <th>Last Name</th>
+                            <th>Gender</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="emp in employees">
+                            <td>{{emp.firstName}}</td>
+                            <td>{{emp.lastName}}</td>
+                            <td>{{emp.gender}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <br />
+
+            <!--used in list-->
+            <div>
+                <b>Use ng-repeat to Generate List:</b>
+                <!--get index using $parent.$index-->
+                <div>
+                    <ul>
+                        <li ng-repeat="country in countries">
+                            {{country.name}} - Index = {{$index}} <!--get index-->
+                            <ul>
+                                <li ng-repeat="city in country.cities">
+                                    {{city.name}} - Parent Index = {{$parent.$index}}, Index = {{$index}} <!--get parent index-->
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+                <!--get index using ng-init-->
+                <div>
+                    <ul>
+                        <li ng-repeat="country in countries" ng-init="parentIndex = $index">
+                            {{country.name}} - Index = {{$index}}
+                            <ul>
+                                <li ng-repeat="city in country.cities">
+                                    {{city.name}} - Parent Index = {{parentIndex}}, Index = {{$index}}
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!--Handling Events: ng-click-->
+        <div>
+            <b>Use ng-click to Handle Events:</b>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Likes</th>
+                        <th>Dislikes</th>
+                        <th>Like/Dislike</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="technology in technologies">
+                        <td>{{technology.name}}</td>
+                        <td>{{technology.likes}}</td>
+                        <td>{{technology.dislikes}}</td>
+                        <td>
+                            <input type="button" value="Like" ng-click="incrementLikes(technology)" />
+                            <input type="button" value="Dislike" ng-click="incrementDislikes(technology)" />
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <br />
+        </div>
+
+        <!--Filters: Format, Sort and Filter Data-->
+        <div>
+            <b>Use of Filters:</b>
+            <!--Format, filer, sort and search-->
+            <div>
+                1. Format/Filter/Sort/Search:<br />
+                Rows to display: <input type="number" step="1" ng-model="rowLimit" />
+                <br /><br />
+                Order By: <select ng-model="sortColumn">
+                    <option value="-firstName">Name DESC</option>
+                    <option value="-gender">Gender DESC</option>
+                    <option value="DOB">DOB ASC</option>
+                    <option value="-salary">Salary DESC</option><!--use + for asc and - for desc. salary:true is also desc-->
+                </select>
+                <br /><br />
+                <!--searchText searches all the column; searchText.firstName searches name column only-->
+                <!--Search: <input type="text" ng-model="searchText" placeholder="Search Employees"/>-->
+                Search Name: <input type="text" ng-model="searchText.firstName" placeholder="Search Name" />
+                Search City: <input type="text" ng-model="searchText.city" placeholder="Search City" />
+                <!--Search Name or City: <input type="text" ng-model="searchText" placeholder="Search Name & City"/>--><!--set: "filter:search"; works with search function-->
+                <input type="checkbox" ng-model="exactMatch" /> Exact Match
+                <br /><br />
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>DOB</th>
+                            <th>Gender</th>
+                            <th>Salary</th>
+                            <th>Salary</th>
+                            <th>City</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="emp in employees | limitTo: rowLimit:0 | orderBy: sortColumn | filter: searchText:exactMatch">
+                            <!--display rowLimit rows starting from row1-->
+                            <td>{{emp.firstName | uppercase}} {{emp.lastName}}</td>
+                            <td>{{emp.DOB | date:"MM/dd/yyyy"}}</td> <!--must be MM. mm doesn't work-->
+                            <td>{{emp.gender | lowercase}}</td>
+                            <td>{{emp.salary | number:2}}</td><!--2 defines number of decimals-->
+                            <td>{{emp.salary | currency:"£":1}}</td><!--customized currency and decimals-->
+                            <td>{{emp.city}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <br />
+            </div>
+
+            <!--Sort by clicking table header-->
+            <div>
+                2. Sort by Clicking Header:
+                <table>
+                    <thead>
+                        <tr>
+                            <th ng-click="sortData('firstName')">
+                                Name <div ng-class="getSortClass('firstName')"></div>
+                            </th>
+                            <th ng-click="sortData('DOB')">
+                                DOB <div ng-class="getSortClass('DOB')"></div>
+                            </th>
+                            <th ng-click="sortData('gender')">
+                                Gender <div ng-class="getSortClass('gender')"></div>
+                            </th>
+                            <th ng-click="sortData('salary')">
+                                Salary <div ng-class="getSortClass('salary')"></div>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="emp in employees | orderBy:sortColumn:reverseSort">
+                            <td>{{emp.firstName}} {{emp.lastName}}</td>
+                            <td>{{emp.DOB}}</td>
+                            <td>{{emp.gender}}</td>
+                            <td>{{emp.salary}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <br />
+            </div>
+
+
+            <!--Custom Filter in Filters.js-->
+            <div>
+                3. Custom Filter:
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Gender</th>
+                            <th>Salary</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="emp in employees">
+                            <td>{{emp.firstName}} {{emp.lastName}}</td>
+                            <td>{{emp.genderCode | gender}}</td> <!--gender is the filter name in Filters.js-->
+                            <td>{{emp.salary | number:2}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <br />
+            </div>
+        </div>
+
+        <!--ng-hide and ng-show-->
+        <div>
+            <b>User of ng-hide and ng-show:</b><br />
+            <input type="checkbox" ng-model="hideSalary" /> Hide Salary
+            <br />
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Gender</th>
+                        <th ng-hide="hideSalary">Salary</th>
+                        <th ng-show="!hideSalary">Salary</th>
+                        <th ng-show="hideSalary">Salary</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="emp in employees">
+                        <td>{{emp.firstName}} {{emp.lastName}}</td>
+                        <td>{{emp.genderCode | gender}}</td> <!--gender is the filter name in Filters.js-->
+                        <td ng-hide="hideSalary">{{emp.salary | number:2}}</td>
+                        <td ng-show="!hideSalary">{{emp.salary | number:2}}</td>
+                        <td ng-show="hideSalary">#####</td><!--Trick to display hashed salary-->
+                    </tr>
+                </tbody>
+            </table>
+            <br />
+        </div>
+
+        <!--ng-init--><!--check ng-repeat section for another example-->
+        <div ng-init="emps=[
+                {name:'Ben', gender:'Male', city: 'London'},
+                {name:'Sara', gender:'Female', city: 'Richmond'},
+                {name:'Mark', gender:'Male', city: 'Chicago'},
+                {name:'Pam', gender:'Female', city: 'London'},
+                {name:'Todd', gender:'Male', city: 'Richmond'},
+             ]"><!--In real development, this should be defined in controller instead-->
+            <b>Use of ng-init:</b>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Gender</th>
+                        <th>City</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="emp in emps">
+                        <td>{{emp.name}}</td>
+                        <td>{{emp.gender}}</td>
+                        <td>{{emp.city}}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <br />
+        </div>
+
+        <!--ng-include-->
+        <div>
+            <b>Use of ng-include:</b>
+            1. Include a File:
+            <div ng-include="'EmployeeTable.html'"></div><br />
+            2. Include a Property (Use a Dropdown to Display Different View):<br />
+            Employee View (display table view by default):
+            <select ng-model="employeeView">
+                <option value="EmployeeTable.html">Table</option>
+                <option value="EmployeeList.html">List</option>
+            </select>
+            <div ng-include="employeeView"></div><br />
+        </div>
+    </div>
+
+    <!--Consume Web Service using $http-->  
+    <div ng-controller="serviceController">
+        <b>Consume Web Services using $http:</b><br />
+        {{error}} <!--error message if request is failed.-->
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Gender</th>
+                    <th>Salary</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="emp in dbEmployees">
+                    <td>{{emp.id}}</td>
+                    <td>{{emp.name}}</td>
+                    <td>{{emp.gender}}</td>
+                    <td>{{emp.salary}}</td>
+                </tr>
+            </tbody>
+        </table>
+        <br />
+    </div>
+
+    <!--Create Custom Service-->
+    <div ng-controller="customsvrController">
+        <b>Create Custom AngularJS Service:</b>
+        <table>
+            <tr>
+                <td>Your String</td>
+                <td><input type="text" ng-model="input"/></td>
+            </tr>
+            <tr>
+                <td>Result</td>
+                <td><input type="text" ng-model="output"/></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td><input type="button" ng-click="transformString(input)" value="Process String"/></td>
+            </tr>
+        </table>
+        <br />
+    </div>
+
+    <!--Nested scopes and controller as syntax-->
+    <div>
+        <b>Nested scopes and controller as syntax</b>
+        <div ng-controller="nationController">
+            {{name}}
+            <div ng-controller="stateController">
+                {{$parent.name}}-{{name}}
+                <div ng-controller="cityController">
+                    {{$parent.$parent.name}}-{{$parent.name}}-{{name}}
+                </div>
+            </div>
+        </div>
+        <div ng-controller="nationController2 as nationCtrl">
+            <!--use controlelr as syntax-->
+            {{nationCtrl.name}}
+            <div ng-controller="stateController2 as stateCtrl">
+                <!--use controlelr as syntax-->
+                {{nationCtrl.name}}-{{stateCtrl.name}}
+                <div ng-controller="cityController2 as cityCtrl">
+                    <!--use controlelr as syntax-->
+                    {{nationCtrl.name}}-{{stateCtrl.name}}-{{cityCtrl.name}}
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

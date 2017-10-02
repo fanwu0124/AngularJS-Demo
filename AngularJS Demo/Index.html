@@ -1,0 +1,45 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" ng-app="Demo">
+<head>
+    <title></title>
+    <meta charset="utf-8" />
+    <base href="/" />
+    <script src="Scripts/angular.min.js"></script>
+    <script src="Scripts/angular-route.min.js"></script>
+    <link href="LayoutStyle.css" rel="stylesheet" />
+    <script src="Scripts/RouteScript.js"></script>
+</head>
+<body>
+    <table style="font-family: Arial">
+        <tr>
+            <td colspan="2" class="header">
+                <h1>
+                    WebSite Header
+                </h1>
+            </td>
+        </tr>
+        <tr>
+            <!--<td class="leftMenu">
+                <a href="#!/home">Home</a>
+                <a href="#!/courses">Courses</a>
+                <a href="#!/students">Students</a>
+            </td>-->
+            <td class="leftMenu">
+                <!--Remove # in url-->
+                <a href="home">Home</a>
+                <a href="courses">Courses</a>
+                <a href="students">Students</a>
+            </td>
+            <td class="mainContent">
+                <!--Inject partial view here-->
+                <ng-view></ng-view>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2" class="footer">
+                <b>Website Footer</b>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>
