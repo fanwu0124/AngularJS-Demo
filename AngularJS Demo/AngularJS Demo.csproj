@@ -102,6 +102,7 @@
     <Content Include="EmployeeTable.html" />
     <Content Include="Demo.html" />
     <Content Include="Scripts\angular-mocks.js" />
+    <Content Include="Templates\StudentsSearch.html" />
     <Content Include="Templates\StudentDetails.html" />
     <Content Include="Templates\Students.html" />
     <Content Include="Scripts\angular.min.js.map" />

@@ -33,7 +33,6 @@
                     src binding expression is not evaluated. The image is then loaded in the second request
                     from the image path.-->
                 <!--<img src="{{employee.icon}}" alt="{{employee.firstname}}" style="height:50px;width:50px" />-->
-
                 <!--Use ng-src to fix 404 error-->
                 <img ng-src="{{employee.icon}}" alt="{{employee.firstname}}" style="height:50px;width:50px" />
             </div>
@@ -239,7 +238,7 @@
 
         <!--ng-hide and ng-show-->
         <div>
-            <b>User of ng-hide and ng-show:</b><br />
+            <b>Use of ng-hide and ng-show:</b><br />
             <input type="checkbox" ng-model="hideSalary" /> Hide Salary
             <br />
             <table>
@@ -272,7 +271,8 @@
                 {name:'Mark', gender:'Male', city: 'Chicago'},
                 {name:'Pam', gender:'Female', city: 'London'},
                 {name:'Todd', gender:'Male', city: 'Richmond'},
-             ]"><!--In real development, this should be defined in controller instead-->
+             ]">
+            <!--In real development, this should be defined in controller instead-->
             <b>Use of ng-init:</b>
             <table>
                 <thead>
@@ -308,7 +308,7 @@
         </div>
     </div>
 
-    <!--Consume Web Service using $http-->  
+    <!--Consume Web Service using $http-->
     <div ng-controller="serviceController">
         <b>Consume Web Services using $http:</b><br />
         {{error}} <!--error message if request is failed.-->
@@ -339,15 +339,15 @@
         <table>
             <tr>
                 <td>Your String</td>
-                <td><input type="text" ng-model="input"/></td>
+                <td><input type="text" ng-model="input" /></td>
             </tr>
             <tr>
                 <td>Result</td>
-                <td><input type="text" ng-model="output"/></td>
+                <td><input type="text" ng-model="output" /></td>
             </tr>
             <tr>
                 <td></td>
-                <td><input type="button" ng-click="transformString(input)" value="Process String"/></td>
+                <td><input type="button" ng-click="transformString(input)" value="Process String" /></td>
             </tr>
         </table>
         <br />
@@ -376,6 +376,34 @@
                     {{nationCtrl.name}}-{{stateCtrl.name}}-{{cityCtrl.name}}
                 </div>
             </div>
+        </div>
+    </div>
+    <br />
+
+    <!--Difference between $scope and $rootScope-->
+    <div>
+        <b>Difference between $scope and $rootScope</b>
+        <span>1. redController</span>
+        <div ng-controller="redController">
+            Root Scope Coloer: {{rootScopeColor}}<br /><!--objects in $rootScope can be accessed in all the controllers-->
+            Red Color Controller: {{redColor}}<br /> 
+            Green Color Controller: {{greenColor}}<br /><!--objects in other controllers cannot be accessed in this controller-->
+        </div>
+        <br />
+        <span>2. greenController</span>
+        <div ng-controller="greenController">
+            Root Scope Coloer: {{rootScopeColor}}<br /><!--objects in $rootScope can be accessed in all the controllers-->
+            Green Color Controller: {{greenColor}}<br />
+            Red Color Controller: {{redColor}}<br /><!--objects in other controllers cannot be accessed in this controller-->
+        </div>
+        <br />
+        <span>3. greenController</span>
+        <div ng-controller="greenController">
+            Root Scope Coloer: {{rootScopeColor}}<br /><!--objects in $rootScope can be accessed in all the controllers-->
+            Green Color Controller: {{greenColor}}<br />
+            <span style="color:red" ng-show="redColor == undefined">
+                redColor is undefined. <!--Show message if trying to access objects in other controllers-->
+            </span>
         </div>
     </div>
 </body>

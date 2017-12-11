@@ -216,3 +216,14 @@ myApp
         this.name = "Houston";
     });
 
+//Difference between $scope and $rootScope
+myApp
+    .controller("redController", function ($scope, $rootScope) {
+        $scope.redColor = "I am Red."; //Available only in this controller.
+        $rootScope.rootScopeColor = "I am Root Scope Color." //Available in all controllers.
+    })
+    .controller("greenController", function ($scope) {
+        $scope.greenColor = "I am Green."; //Available only in this controller.
+    })
+
+
